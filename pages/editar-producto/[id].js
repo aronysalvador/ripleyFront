@@ -42,7 +42,7 @@ const EditarProducto = (producto) => {
     if(id){
       const obtenerProductos = async () => {
         try {
-          const response = await clienteAxios.put(`http://localhost:5000/api/productos/${id}`);
+          const response = await clienteAxios.put(`/${id}`);
           const data = response.data;
 
             setDataEditar({
@@ -105,7 +105,7 @@ const handleSubmit = e => {
  
     async function crearProducto () {
         try {
-            const response = await clienteAxios.put(`http://localhost:5000/api/productos/${id}`, {
+            const response = await clienteAxios.put(`/${id}`, {
               productoNombre: nombre,
               productoDescripcion: descripcion,
               productoCantidad: cantidad,

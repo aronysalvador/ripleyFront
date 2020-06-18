@@ -2,9 +2,6 @@ import React, {useEffect, useState, useContext } from 'react';
 import Layout from '../components/layout/Layout';
 import DetallesProducto from '../components/layout/DetallesProducto';
 import clienteAxios from '../config/axios';
-import { Formulario, Campo, InputSubtmit, Error } from '../components/ui/Formulario';
-
-
 
 
 const Home = () => {
@@ -14,7 +11,7 @@ const Home = () => {
   useEffect(()=>{
     const obtenerProductos = async () => {
       try {
-        const response = await clienteAxios.get('http://localhost:5000/api/productos/');
+        const response = await clienteAxios.get('/');
         const data = response.data;
         actualizarData(data);
         

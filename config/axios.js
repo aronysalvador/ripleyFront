@@ -1,7 +1,13 @@
 import axios from 'axios';
 
-const clienteAxios = axios.create({
-//   baseURL: process.env.NEXT_PUBLIC_REACT_APP_BACKEND_URL
-});
+const  clienteAxios = axios.create({
+
+    baseURL:  process.env.API_BACK,
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-type": "application/json; charset=UTF-8"
+      }
+
+  });
 
 export default clienteAxios;

@@ -1,6 +1,6 @@
-import React, {  useState, useContext } from 'react';
+import React from 'react';
 import { css } from '@emotion/core';
-import Router, { useRouter } from 'next/router';
+import  { useRouter } from 'next/router';
 import Layout from '../components/layout/Layout';
 import { Formulario, Campo, InputSubtmit, Error } from '../components/ui/Formulario';
 import clienteAxios from '../config/axios';
@@ -35,7 +35,7 @@ const NuevoProducto = () => {
     async function crearProducto () {
       
         try {
-            const response = await clienteAxios.post('http://localhost:5000/api/productos/', {
+            const response = await clienteAxios.post('/', {
               productoNombre: nombre,
               productoDescripcion: descripcion,
               productoCantidad: cantidad,

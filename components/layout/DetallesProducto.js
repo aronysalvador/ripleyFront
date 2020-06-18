@@ -133,7 +133,7 @@ const DetallesProducto = ({producto}) => {
 
     const eliminarProductos = async (idEliminar) => {
         try {        
-             await clienteAxios.delete(`http://localhost:5000/api/productos/${idEliminar}`);
+             await clienteAxios.delete(`/${idEliminar}`);
              
         } catch (error) {
             console.log('No se pudo eliminar la data')
