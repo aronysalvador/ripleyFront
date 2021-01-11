@@ -20,12 +20,21 @@ const usesValidacion = (stateInicial, validar, fn) => {
     }, [errores]);
 
     //Funcion que se ejecuta conforme el usuario escribe algo.
-    const handleChange = e => {
+    const handleChange = e => {       
         guardarValores({
             ...valores,
             [e.target.name] : e.target.value
         })
     } 
+
+    //Funcion que se ejecuta conforme el usuario escribe algo.
+    const handleChangeImage = e => {     
+        guardarValores({
+            ...valores,
+            [e.target.name] : e.target.files[0]
+        })
+    } 
+
 
     //Funcion que se ejecuta cuando el usuario hace submit
     const handleSubmit = e => {
@@ -45,6 +54,7 @@ const usesValidacion = (stateInicial, validar, fn) => {
         valores,
         errores,
         handleChange,
+        handleChangeImage,
         handleSubmit,
         handleBlur
     };

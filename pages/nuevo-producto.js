@@ -13,8 +13,9 @@ import validarCrearProducto from '../validaciones/validarCrearProducto';
 const STATE_INICIAL = {
   nombre: '',
   descripcion: '',
-  cantidad: 0,
-  ubicacion: ''
+  precio: 0,
+  marca: '',
+  imagen:''
 }
 
 
@@ -24,26 +25,39 @@ const NuevoProducto = () => {
     valores,
     errores,
     handleChange,
+    handleChangeImage,
     handleSubmit,
     handleBlur} = useValidacion(STATE_INICIAL, validarCrearProducto, crearProducto);
 
-    const { nombre, descripcion, cantidad, ubicacion } = valores;
+    const { nombre, descripcion, precio, marca, imagen } = valores;
 
      //Hook de routing para redireccionar
     const router = useRouter();
 
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+
+    });
+
     async function crearProducto () {
-      
+
+      let imageBase64= await toBase64(valores.imagen)
+ 
         try {
             const response = await clienteAxios.post('/', {
               productoNombre: nombre,
               productoDescripcion: descripcion,
-              productoCantidad: cantidad,
-              productoUbicacion: ubicacion
+              productoPrecio: precio,
+              productoMarca: marca,
+              productoImagen: imageBase64
             });
+
             return router.push('/');
         } catch (error) {
-            console.log('No se puedo traer la data')
+            console.log('No se puedo guardar la data')
         }
 
     }
@@ -95,34 +109,47 @@ const NuevoProducto = () => {
               {errores.descripcion && <Error>{errores.descripcion}</Error>}
 
               <Campo>
-                  <label htmlFor="cantidad">Cantidad</label>
+                  <label htmlFor="precio">precio</label>
                   <input 
                       type="number"
-                      id="cantidad"
-                      placeholder="Cantidad del Producto"
-                      name="cantidad"
-                      value={cantidad}
+                      id="precio"
+                      placeholder="precio del Producto"
+                      name="precio"
+                      value={precio}
                       onChange={handleChange}
                       onBlur={handleBlur}
                   />
               </Campo>
 
-              {errores.cantidad && <Error>{errores.cantidad}</Error>}
+              {errores.precio && <Error>{errores.precio}</Error>}
 
               <Campo>
-                  <label htmlFor="ubicacion">Ubicacion</label>
+                  <label htmlFor="marca">marca</label>
                   <input 
                       type="text"
-                      id="ubicacion"
-                      placeholder="Ubicacion del Producto"
-                      name="ubicacion"
-                      value={ubicacion}
+                      id="marca"
+                      placeholder="marca del Producto"
+                      name="marca"
+                      value={marca}
                       onChange={handleChange}
                       onBlur={handleBlur}
                   />
               </Campo>
 
-              {errores.ubicacion && <Error>{errores.ubicacion}</Error>}
+              {errores.marca && <Error>{errores.marca}</Error>}
+
+              <Campo>
+                  <label htmlFor="marca">Imagen</label>
+                  <input 
+                      type="file"
+                      id="imagen"
+                      name="imagen"
+                      // value={imagen}
+                      onChange={handleChangeImage}
+                  />
+              </Campo>
+
+              {errores.imagen && <Error>{errores.imagen}</Error>}
 
             </fieldset>
 
@@ -133,8 +160,7 @@ const NuevoProducto = () => {
             />
           </Formulario>
         </>
-        }
-        
+    
       </Layout>
     </div>
   )

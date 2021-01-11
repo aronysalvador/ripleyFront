@@ -1,5 +1,6 @@
 import React, { useState} from 'react';
 import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
 import { Formulario, Campo, InputSubtmit, Error } from '../ui/Formulario';
 import Link from 'next/link';
 import clienteAxios from '../../config/axios';
@@ -24,7 +25,7 @@ const Titulo = styled.a`
     font-size: rem;
     font-weight:bold;
     margin: 0;
-
+    vertical-align: top;
     :hover {
         cursor: pointer;
     }
@@ -35,38 +36,7 @@ const TextoDescripcion = styled.p`
     color: #888;
 `
 
-const Comentarios= styled.div` 
-    marging-top: 2rem;
-    display:flex;
-    align-items: center;
-    div {
-        display:flex;
-        align-items: center;
-        border: 1px solid #e1e1e1;
-        padding: .3rem 1rem;
-        margin-right: 2rem;
-    }
-    img {
-        width: 2rem;
-        margin-right: 2rem;
-        
-    }
-    p {
-        font-size: 1.6rem;
-        margin-right: 1rem;
-        font-weight: 700;
-        &:last-of-type {
-            margin: 0;
-
-        }
-    }
-`
-
-const Imagen = styled.img`
-    width: 200px;
-`;
-
-const Votos = styled.div`
+const Nombre = styled.div`
     flex: 0 0 auto;
     text-align: center;
     border: 1px solid #e1e1e1;
@@ -118,9 +88,10 @@ const Votos = styled.div`
     }
     `;
 
-const DetallesProducto = ({producto}) => {
+const DetallesProducto = ({producto ,obtenerProductos}) => {
+    const router = useRouter();
  
-    const { _id, productoNombre, productoDescripcion, productoCantidad, productoUbicacion  } = producto;
+    const { _id, productoNombre, productoDescripcion, productoPrecio, productoMarca, productoImagen  } = producto;
 
     //Eliminar un producto
     const handleEliminar = e => {
@@ -130,59 +101,53 @@ const DetallesProducto = ({producto}) => {
         
     }
 
-
     const eliminarProductos = async (idEliminar) => {
         try {        
-             await clienteAxios.delete(`/${idEliminar}`);
-             
+             await clienteAxios.delete(`/${idEliminar}`); 
+             obtenerProductos()        
         } catch (error) {
             console.log('No se pudo eliminar la data')
         }
-      }
+    }
+      
 
     return (  
         <Producto>
             <DescripcionProducto>
                 <div>
-                    <Votos>
+                    <Nombre>
                         <Titulo> {productoNombre}</Titulo>
-                    </Votos>
+                    </Nombre>
 
                     <Titulo>Descripcion</Titulo>
                     <TextoDescripcion>{productoDescripcion}</TextoDescripcion>
 
-                    <Titulo>Cantidad</Titulo>
-                    <TextoDescripcion> {productoCantidad}</TextoDescripcion>
+                    <Titulo>Precio</Titulo>
+                    <TextoDescripcion> {productoPrecio}</TextoDescripcion>
 
-                    <Titulo>Ubicacion</Titulo>
-                    <TextoDescripcion>{productoUbicacion}</TextoDescripcion>
+                    <Titulo>Marca</Titulo>
+                    <TextoDescripcion>{productoMarca}</TextoDescripcion>
+                    {productoImagen&& <><Titulo>Imagen:  &nbsp;  &nbsp;  &nbsp;</Titulo> <img src={productoImagen}  style={{width: "250px", height: "100px"}} alt="Imagen" /></>}
+                    
 
                 </div>
             </DescripcionProducto>
-
-            <form
-            >
-                <Link href='/editar-producto/[id]' as={`/editar-producto/${_id}`}
-                        >
+            <form>
+                <Link href='/editar-producto/[id]' as={`/editar-producto/${_id}`}>
                     <InputSubtmit2 
                         type="submit"              
                         value="Editar"
                     />    
                 </Link>   
                       
-            </form>
-            
-            <form
-                onSubmit={handleEliminar}
-            >
+            </form>         
+            <form onSubmit={handleEliminar}>
                 <InputSubtmit3
                     type="submit"
                     value="Eliminar Producto"
                 />
             </form>
- 
-        </Producto>
-        
+        </Producto>       
     );
 }
  

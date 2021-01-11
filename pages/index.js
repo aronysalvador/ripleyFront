@@ -4,24 +4,25 @@ import DetallesProducto from '../components/layout/DetallesProducto';
 import clienteAxios from '../config/axios';
 
 
+
 const Home = () => {
 
   const [productos, guardarProductos] = useState([]);
 
-  useEffect(()=>{
-    const obtenerProductos = async () => {
-      try {
-        const response = await clienteAxios.get('/');
-        const data = response.data;
-        actualizarData(data);
-        
-      } catch (error) {
-          console.log('No se puedo traer la data')
-      }
+  const obtenerProductos = async () => {
+    try {
+      const response = await clienteAxios.get('/');
+      const data = response.data;
+      actualizarData(data);
+    } catch (error) {
+        console.log('No se puedo traer la data')
     }
+  } 
+  
+  useEffect(()=>{  
     obtenerProductos();
     
-  }, [productos]);
+  }, []);
    
   function actualizarData (data) {
     const productos2 = data;
@@ -38,6 +39,7 @@ const Home = () => {
                       <DetallesProducto
                           key={productos._id}
                           producto={productos}
+                          obtenerProductos={obtenerProductos}
                       />
                       
                   ))}

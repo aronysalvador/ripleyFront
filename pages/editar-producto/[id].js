@@ -11,10 +11,10 @@ import validarCrearProducto from '../../validaciones/validarCrearProducto';
  const STATE_INICIAL = {
   nombre: '',
   descripcion:' ',
-  cantidad: 0,
-  ubicacion: ''
+  precio: 0,
+  marca: '',
+  imagen:''
 }
-
 
 const EditarProducto = (producto) => {
 
@@ -27,8 +27,8 @@ const EditarProducto = (producto) => {
   const [ dataEditar , setDataEditar ] = useState({
     nombre: '',
     descripcion:' ',
-    cantidad: 0,
-    ubicacion: ''
+    precio: 0,
+    marca: ''
     });
 
   const [paso, guardarPaso] = useState(true);
@@ -48,8 +48,9 @@ const EditarProducto = (producto) => {
             setDataEditar({
               nombre : data.producto.productoNombre,
               descripcion: data.producto.productoDescripcion,
-              cantidad: data.producto.productoCantidad, 
-              ubicacion: data.producto.productoUbicacion
+              precio: data.producto.productoPrecio, 
+              marca: data.producto.productoMarca,
+              imagen: data.producto.productoImagen
   
             })  
 
@@ -68,7 +69,6 @@ const EditarProducto = (producto) => {
 
     if(submitForm) {
       const noErrores = Object.keys(errores).length === 0;
-
       if(noErrores) {
         crearProducto(); // fn = Funcion que se ejecuta en el componente
       }
@@ -81,8 +81,13 @@ const handleChange = e => {
   setDataEditar({
       ...dataEditar,
       [e.target.name] : e.target.value
+  })
+} 
 
-
+const handleChangeImage = e => {     
+  setDataEditar({
+      ...dataEditar,
+      [e.target.name] : e.target.files[0]
   })
 } 
 
@@ -101,15 +106,25 @@ const handleSubmit = e => {
 }
 
  //Extraer el nombre del Proyecto
-  const { nombre, descripcion, cantidad,ubicacion } = dataEditar; 
+  const { nombre, descripcion, precio,marca } = dataEditar; 
+  const toBase64 = file => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+  });
  
     async function crearProducto () {
+
+        let imageBase64= await toBase64(dataEditar.imagen)
+      
         try {
             const response = await clienteAxios.put(`/${id}`, {
               productoNombre: nombre,
               productoDescripcion: descripcion,
-              productoCantidad: cantidad,
-              productoUbicacion: ubicacion
+              productoPrecio: precio,
+              productoMarca: marca,
+              productoImagen: imageBase64
             });
             return router.push('/');
         } catch (error) {
@@ -132,8 +147,7 @@ const handleSubmit = e => {
             onSubmit={handleSubmit}
             // noValidate
           >
-
-            <fieldset>
+            {dataEditar.nombre && <fieldset>
               <legend>Informacion General</legend>
 
               <Campo>
@@ -163,42 +177,52 @@ const handleSubmit = e => {
               {errores.descripcion && <Error>{errores.descripcion}</Error>}
 
               <Campo>
-                  <label htmlFor="cantidad">Cantidad</label>
+                  <label htmlFor="precio">Precio</label>
                   <input 
                       type="number"
-                      id="cantidad"
-                      placeholder="Cantidad del Producto"
-                      name="cantidad"
-                      value={cantidad}
+                      id="precio"
+                      placeholder="precio del Producto"
+                      name="precio"
+                      value={precio}
                        onChange={handleChange}
                      onBlur={handleBlur}
                   />
               </Campo>
-              {errores.cantidad && <Error>{errores.cantidad}</Error>}
+              {errores.precio && <Error>{errores.precio}</Error>}
 
               <Campo>
-                  <label htmlFor="ubicacion">Ubicacion</label>
+                  <label htmlFor="marca">Marca</label>
                   <input 
                       type="text"
-                      id="ubicacion"
-                      placeholder="Ubicacion del Producto"
-                      name="ubicacion"
-                      value={ubicacion}
+                      id="marca"
+                      placeholder="marca del Producto"
+                      name="marca"
+                      value={marca}
                         onChange={handleChange}
                        onBlur={handleBlur}
                   />
               </Campo>
-              {errores.ubicacion && <Error>{errores.ubicacion}</Error>}
-            </fieldset>
-
+              {errores.marca && <Error>{errores.marca}</Error>}
+              <Campo>
+                  <label htmlFor="marca">Imagen</label>
+                  <input 
+                      type="file"
+                      id="imagen"
+                      name="imagen"
+                      
+                      onChange={handleChangeImage}
+                  />
+              </Campo>
+              {errores.imagen && <Error>{errores.imagen}</Error>}
+            </fieldset>}
+ 
             <InputSubtmit 
                 type="submit"
                 value="Editar Producto"
             />
           </Formulario>
         </>
-        }
-        
+
       </Layout>
     </div>
   )
